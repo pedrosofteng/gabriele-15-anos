@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Convite para a celebração dos 15 anos de Gabriele, em 17 de outubro de 2026, no Espaço Ruby."
+    />
+    <meta name="theme-color" content="#061426" />
+    <title>Gabriele XV — Convite</title>
+    <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/bodoni-moda-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/bodoni-moda-italic-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="data.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body class="invite-page">
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+    <header class="site-header" data-header>
+      <a class="monogram" href="#inicio" aria-label="Gabriele XV — início">
+        <span>G</span><i></i><small>XV</small>
+      </a>
+
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="#historia">A celebração</a>
+        <a href="#detalhes">Detalhes</a>
+        <a href="#confirmar">Confirmar</a>
+      </nav>
+
+      <a class="header-cta" href="#confirmar">Confirmar presença</a>
+    </header>
+
+    <main id="conteudo">
+      <section class="hero" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-grid page-shell">
+          <div class="hero-copy">
+            <p class="eyebrow reveal">Gabriele · XV <span>17 · 10 · 2026 · Betim</span></p>
+            <h1 id="hero-title" class="reveal reveal-delay-1">
+              Uma noite para guardar
+              <em>na memória.</em>
+            </h1>
+            <p class="hero-intro reveal reveal-delay-2">
+              No dia 17 de outubro, Gabriele celebra seus 15 anos no Espaço Ruby —
+              e quer você nessa noite.
+            </p>
+            <div class="hero-actions reveal reveal-delay-3">
+              <a class="button button-light" href="#confirmar">
+                <span>Colocar meu nome na lista</span>
+                <svg aria-hidden="true" viewBox="0 0 20 20">
+                  <path d="M4 10h11M11 6l4 4-4 4" />
+                </svg>
+              </a>
+              <a class="text-link" href="#detalhes">Ver os detalhes</a>
+            </div>
+
+            <div class="hero-signature reveal reveal-delay-3" aria-label="Gabriele, quinze anos">
+              <span>Gabriele</span>
+              <i></i>
+              <small>XV</small>
+            </div>
+          </div>
+
+          <figure class="invitation-art reveal reveal-delay-2">
+            <div class="art-orbit" aria-hidden="true"></div>
+            <button class="art-frame" type="button" data-art-open aria-label="Abrir o convite em tela cheia">
+              <img
+                src="assets/convite-gabriele-15-anos.jpg"
+                srcset="assets/convite-gabriele-480w.jpg 480w, assets/convite-gabriele-720w.jpg 720w, assets/convite-gabriele-15-anos.jpg 1060w"
+                sizes="(max-width: 600px) calc(100vw - 42px), (max-width: 900px) min(100vw - 40px, 510px), 480px"
+                width="1060"
+                height="1484"
+                alt="Convite dos 15 anos de Gabriele, em azul-marinho e branco, com flores e uma coroa."
+                fetchpriority="high"
+                decoding="async"
+              />
+              <span class="art-expand-label" aria-hidden="true">
+                <svg viewBox="0 0 20 20"><path d="M7.5 3.5h-4v4M12.5 3.5h4v4M7.5 16.5h-4v-4M12.5 16.5h4v-4" /></svg>
+                Ampliar convite
+              </span>
+            </button>
+            <figcaption>O convite para uma noite única.</figcaption>
+          </figure>
+        </div>
+
+        <div class="hero-rail" aria-hidden="true">
+          <span>Role para descobrir</span><i></i>
+        </div>
+      </section>
+
+      <section class="countdown-section" aria-label="Contagem regressiva para a festa">
+        <div class="countdown page-shell" data-countdown>
+          <p>Faltam</p>
+          <div class="countdown-units">
+            <div><strong data-days>--</strong><span>dias</span></div>
+            <i></i>
+            <div><strong data-hours>--</strong><span>horas</span></div>
+            <i></i>
+            <div><strong data-minutes>--</strong><span>minutos</span></div>
+            <i></i>
+            <div><strong data-seconds>--</strong><span>segundos</span></div>
+          </div>
+          <span class="countdown-date">Sábado · 21h</span>
+        </div>
+      </section>
+
+      <section class="story-section" id="historia" aria-labelledby="story-title">
+        <div class="story-grid page-shell">
+          <div class="section-index reveal" aria-hidden="true">01</div>
+          <div class="story-title-wrap reveal">
+            <p class="eyebrow eyebrow-dark">Um convite pessoal</p>
+            <h2 id="story-title">Eu faço 15. <em>Você vem?</em></h2>
+          </div>
+          <div class="story-copy reveal reveal-delay-1">
+            <p>
+              Quero comemorar ao lado de quem faz parte da minha vida. Espero você
+              para dançar, sorrir e viver essa noite comigo.
+            </p>
+            <span>Com carinho, Gabriele.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="details-section" id="detalhes" aria-labelledby="details-title">
+        <div class="page-shell">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Onde a noite acontece</p>
+            <h2 id="details-title">Data, hora<br /><em>e destino.</em></h2>
+          </div>
+
+          <div class="details-list">
+            <article class="detail-item reveal">
+              <span class="detail-number">01</span>
+              <div>
+                <p>Data</p>
+                <h3>17 de outubro</h3>
+                <span>Sábado · 2026</span>
+              </div>
+            </article>
+            <article class="detail-item reveal reveal-delay-1">
+              <span class="detail-number">02</span>
+              <div>
+                <p>Horário</p>
+                <h3>21 horas</h3>
+                <span>Chegue com alguns minutos de antecedência</span>
+              </div>
+            </article>
+            <article class="detail-item reveal reveal-delay-2">
+              <span class="detail-number">03</span>
+              <div>
+                <p>Local</p>
+                <h3>Espaço Ruby</h3>
+                <span>Av. Coletora Artur Trindade, 766<br />Nossa Senhora de Fátima · Betim, MG · 32672-230</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="details-actions reveal">
+            <a
+              class="button button-outline"
+              href="https://www.google.com/maps/search/?api=1&amp;query=Av.%20Coletora%20Artur%20Trindade%2C%20766%2C%20Nossa%20Senhora%20de%20F%C3%A1tima%2C%20Betim%20-%20MG%2C%2032672-230"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Abrir no mapa</span>
+              <svg aria-hidden="true" viewBox="0 0 20 20">
+                <path d="M4 10h11M11 6l4 4-4 4" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="rsvp-section" id="confirmar" aria-labelledby="rsvp-title">
+        <div class="rsvp-shell page-shell">
+          <div class="rsvp-copy reveal">
+            <p class="eyebrow eyebrow-dark">RSVP</p>
+            <h2 id="rsvp-title">Seu nome<br /><em>na lista.</em></h2>
+            <p>
+              Confirme se você poderá estar presente. A resposta leva menos de um
+              minuto e ajuda a preparar cada detalhe da noite.
+            </p>
+            <div class="rsvp-note">
+              <span aria-hidden="true">✦</span>
+              <p>Depois de confirmar, você ainda poderá atualizar sua resposta usando o mesmo nome.</p>
+            </div>
+          </div>
+
+          <div class="rsvp-panel reveal reveal-delay-1">
+            <form class="rsvp-form" data-rsvp-form novalidate>
+              <fieldset class="attendance-fieldset" aria-describedby="attendance-error" aria-required="true">
+                <legend>Você poderá estar presente? <b>*</b></legend>
+                <div class="attendance-options">
+                  <label>
+                    <input type="radio" name="attendance" value="sim" required />
+                    <span>Sim, estarei lá</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="attendance" value="nao" required />
+                    <span>Não poderei ir</span>
+                  </label>
+                </div>
+                <span class="field-error attendance-error" id="attendance-error" data-error-for="attendance" aria-live="polite"></span>
+              </fieldset>
+
+              <div class="form-field form-field-full">
+                <label for="name">Seu nome completo <b>*</b></label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  placeholder="Como está no convite"
+                  minlength="3"
+                  maxlength="90"
+                  required
+                  aria-describedby="name-error"
+                  autocapitalize="words"
+                  enterkeyhint="next"
+                />
+                <span class="field-error" id="name-error" data-error-for="name" aria-live="polite"></span>
+              </div>
+
+              <details class="form-optional">
+                <summary>
+                  <span>
+                    <strong>Adicionar informações opcionais</strong>
+                    <small>WhatsApp, acompanhantes, alimentação ou recado</small>
+                  </span>
+                  <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M5 8l5 5 5-5" /></svg>
+                </summary>
+
+                <div class="form-optional-fields">
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label for="phone">WhatsApp <small>(opcional)</small></label>
+                      <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        autocomplete="tel"
+                        placeholder="(31) 99999-9999"
+                        maxlength="20"
+                        inputmode="tel"
+                        enterkeyhint="next"
+                      />
+                    </div>
+                    <div class="form-field attending-only">
+                      <label for="dietary">Restrição alimentar <small>(opcional)</small></label>
+                      <input
+                        id="dietary"
+                        name="dietary"
+                        type="text"
+                        placeholder="Ex.: vegetariana"
+                        maxlength="120"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-field form-field-full attending-only">
+                    <label for="companions">Acompanhantes <small>(opcional)</small></label>
+                    <textarea
+                      id="companions"
+                      name="companions"
+                      rows="3"
+                      maxlength="320"
+                      placeholder="Um nome por linha"
+                    ></textarea>
+                    <small class="field-help">Informe o nome completo de cada acompanhante.</small>
+                  </div>
+
+                  <div class="form-field form-field-full">
+                    <label for="message">Uma mensagem para Gabriele <small>(opcional)</small></label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows="3"
+                      maxlength="420"
+                      placeholder="Escreva seu recado aqui"
+                    ></textarea>
+                  </div>
+                </div>
+              </details>
+
+              <div class="form-footer">
+                <p><b>*</b> Campo obrigatório</p>
+                <button class="button button-navy" type="submit">
+                  <span>Confirmar minha resposta</span>
+                  <svg aria-hidden="true" viewBox="0 0 20 20">
+                    <path d="M4 10h11M11 6l4 4-4 4" />
+                  </svg>
+                </button>
+              </div>
+              <p class="form-status" role="alert" data-form-status></p>
+            </form>
+
+            <div class="rsvp-success" data-rsvp-success hidden tabindex="-1">
+              <div class="success-mark" aria-hidden="true">
+                <span>G</span><small>XV</small>
+              </div>
+              <p class="eyebrow eyebrow-dark">Resposta registrada</p>
+              <h3 data-success-title>Presença confirmada.</h3>
+              <p data-success-copy>Agora é só contar os dias. Esperamos você para essa noite inesquecível.</p>
+              <button class="text-button text-button-dark" type="button" data-edit-response>Editar minha resposta</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-shell footer-grid">
+        <div>
+          <a class="monogram monogram-footer" href="#inicio" aria-label="Voltar ao início">
+            <span>G</span><i></i><small>XV</small>
+          </a>
+          <p>Uma noite para guardar na memória.</p>
+        </div>
+        <div class="footer-event">
+          <span>17 outubro 2026</span>
+          <span>Espaço Ruby · Betim</span>
+        </div>
+      </div>
+      <p class="footer-signoff">Feito com carinho para Gabriele.</p>
+    </footer>
+
+    <div class="mobile-rsvp-bar is-hidden" data-mobile-rsvp aria-hidden="true" inert>
+      <div><span>17 · 10 · 2026</span><strong>Gabriele XV</strong></div>
+      <a href="#confirmar">Confirmar</a>
+    </div>
+
+    <dialog class="art-dialog" data-art-dialog aria-labelledby="art-dialog-title">
+      <div class="art-dialog-header">
+        <div>
+          <span>Gabriele XV</span>
+          <strong id="art-dialog-title">Convite completo</strong>
+        </div>
+        <button type="button" data-art-close aria-label="Fechar convite">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+      <div class="art-dialog-scroll" data-art-scroll>
+        <img
+          class="art-dialog-image"
+          data-src="assets/convite-gabriele-15-anos.jpg"
+          width="1060"
+          height="1484"
+          alt="Convite completo: Gabriele, 15 anos, 17 de outubro de 2026, às 21 horas, no Espaço Ruby em Betim."
+        />
+      </div>
+      <div class="art-dialog-toolbar">
+        <p>Amplie para ler cada detalhe.</p>
+        <button type="button" data-art-zoom aria-pressed="false">Ampliar 2×</button>
+      </div>
+    </dialog>
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+  </body>
+</html>

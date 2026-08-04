@@ -1,0 +1,13 @@
+# Credenciais e configuracoes locais
+.env
+.env.*
+.dev.vars
+.wrangler/
+
+# Dependencias e arquivos do sistema
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Arte original nao utilizada; os JPGs otimizados sao versionados
+/assets/ChatGPT Image 1 de ago. de 2026, 22_07_09.png

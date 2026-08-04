@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#061426" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Convidados — Gabriele XV</title>
+    <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/bodoni-moda-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/fonts/bodoni-moda-italic-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="data.js" defer></script>
+    <script src="convidados.js" defer></script>
+  </head>
+  <body class="guest-page">
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+    <header class="dashboard-header page-shell">
+      <a class="monogram" href="index.html" aria-label="Voltar para o convite">
+        <span>G</span><i></i><small>XV</small>
+      </a>
+      <div>
+        <span>Painel da celebração</span>
+        <strong>17 · 10 · 2026</strong>
+      </div>
+      <a class="text-link text-link-light" href="index.html">Voltar ao convite</a>
+    </header>
+
+    <main id="conteudo" class="dashboard-main page-shell">
+      <section class="dashboard-intro" aria-labelledby="dashboard-title">
+        <div>
+          <p class="eyebrow">Lista de convidados</p>
+          <h1 id="dashboard-title">A noite começa<br /><em>por aqui.</em></h1>
+        </div>
+        <p>
+          Acompanhe as respostas, encontre convidados e exporte a lista para a
+          organização da festa.
+        </p>
+      </section>
+
+      <section class="metrics" aria-label="Resumo das confirmações">
+        <article>
+          <p>Pessoas confirmadas</p>
+          <strong data-metric-people>0</strong>
+          <span>titulares + acompanhantes</span>
+        </article>
+        <article>
+          <p>Respostas “sim”</p>
+          <strong data-metric-yes>0</strong>
+          <span>convites confirmados</span>
+        </article>
+        <article>
+          <p>Acompanhantes</p>
+          <strong data-metric-companions>0</strong>
+          <span>nomes adicionais</span>
+        </article>
+        <article>
+          <p>Não poderão ir</p>
+          <strong data-metric-no>0</strong>
+          <span>respostas recebidas</span>
+        </article>
+      </section>
+
+      <section class="guest-manager" aria-labelledby="list-title">
+        <div class="manager-toolbar">
+          <div>
+            <p class="eyebrow">Respostas recebidas</p>
+            <h2 id="list-title">Convidados</h2>
+            <p class="toolbar-summary" data-toolbar-summary>0 respostas no total</p>
+          </div>
+          <div class="toolbar-actions">
+            <label class="search-field">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="6" />
+                <path d="m16 16 4 4" />
+              </svg>
+              <span class="sr-only">Buscar convidado</span>
+              <input
+                type="search"
+                placeholder="Buscar por nome"
+                enterkeyhint="search"
+                autocapitalize="words"
+                data-search
+              />
+            </label>
+            <select data-filter aria-label="Filtrar respostas">
+              <option value="todos">Todas</option>
+              <option value="sim">Confirmados</option>
+              <option value="nao">Não irão</option>
+            </select>
+            <button class="button button-outline button-compact" type="button" data-export>
+              Exportar CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="guest-table-wrap" data-table-wrap>
+          <table class="guest-table">
+            <thead>
+              <tr>
+                <th>Convidado</th>
+                <th>Resposta</th>
+                <th>Pessoas</th>
+                <th>Contato</th>
+                <th>Recebida em</th>
+                <th><span class="sr-only">Ações</span></th>
+              </tr>
+            </thead>
+            <tbody data-guest-list></tbody>
+          </table>
+        </div>
+
+        <div class="empty-state" data-empty-state hidden>
+          <div class="empty-monogram" aria-hidden="true">XV</div>
+          <h3 data-empty-title>A lista está pronta para receber os primeiros nomes.</h3>
+          <p data-empty-copy>As confirmações feitas pelo convite aparecerão aqui automaticamente.</p>
+          <a class="button button-navy" href="index.html#confirmar" data-empty-invite>Abrir confirmação</a>
+          <button class="button button-navy" type="button" data-empty-reset hidden>Limpar busca e filtros</button>
+        </div>
+
+        <div class="manager-footer">
+          <p><span data-visible-count>0</span> respostas exibidas</p>
+          <button class="danger-link" type="button" data-clear>Tirar todas as respostas desta demonstração</button>
+        </div>
+      </section>
+
+      <aside class="demo-notice" aria-label="Aviso sobre esta versão">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 10v6M12 7h.01" />
+        </svg>
+        <p>
+          <strong>Versão local de demonstração.</strong> As respostas ficam neste navegador.
+          Antes de publicar, conecte um banco de dados e proteja este painel com acesso administrativo.
+        </p>
+      </aside>
+    </main>
+
+    <div class="modal-backdrop" data-modal hidden>
+      <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-copy">
+        <p class="eyebrow eyebrow-dark">Confirmar ação</p>
+        <h2 id="modal-title" data-modal-title>Remover resposta?</h2>
+        <p id="modal-copy" data-modal-copy>Esta ação não poderá ser desfeita neste navegador.</p>
+        <div>
+          <button class="text-button text-button-dark" type="button" data-modal-cancel>Cancelar</button>
+          <button class="button button-danger" type="button" data-modal-confirm>Remover</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+  </body>
+</html>
