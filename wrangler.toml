@@ -12,3 +12,10 @@ preview_database_id = "572b9f23-cb90-421d-8822-7b9a1a2f5ac6"
 migrations_dir = "migrations"
 
 [env.production]
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "gabriele-15-anos-rsvps"
+database_id = "572b9f23-cb90-421d-8822-7b9a1a2f5ac6"
+preview_database_id = "572b9f23-cb90-421d-8822-7b9a1a2f5ac6"
+migrations_dir = "migrations"
