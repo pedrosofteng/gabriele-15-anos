@@ -11,6 +11,10 @@
   const emptyReset = document.querySelector("[data-empty-reset]");
   const toast = document.querySelector("[data-toast]");
   const modal = document.querySelector("[data-modal]");
+  const clearButton = document.querySelector("[data-clear]");
+  let allItems = [];
+  let isLoading = true;
+  let loadError = false;
   let pendingAction = null;
   let modalTrigger = null;
 
@@ -45,7 +49,7 @@
     const query = window.GabrieleRSVP.normalize(search.value);
     const status = filter.value;
 
-    return window.GabrieleRSVP.load().filter((item) => {
+    return allItems.filter((item) => {
       const names = [item.name, ...(item.companions || [])].join(" ");
       const matchesQuery = !query || window.GabrieleRSVP.normalize(names).includes(query);
       const matchesStatus = status === "todos" || item.attendance === status;
@@ -66,10 +70,29 @@
   }
 
   function render() {
-    const allItems = window.GabrieleRSVP.load();
     const items = getFilteredItems();
     updateMetrics(allItems);
     document.querySelector("[data-visible-count]").textContent = items.length;
+
+    if (isLoading || loadError) {
+      document.querySelector("[data-toolbar-summary]").textContent = isLoading
+        ? "Carregando respostas..."
+        : "Não foi possível atualizar a lista";
+      emptyState.querySelector("[data-empty-title]").textContent = isLoading
+        ? "Buscando as respostas da festa."
+        : "Não foi possível carregar as respostas.";
+      emptyState.querySelector("[data-empty-copy]").textContent = isLoading
+        ? "Isso deve levar apenas alguns instantes."
+        : "Verifique sua conexão e tente novamente.";
+      emptyInvite.hidden = true;
+      emptyReset.hidden = isLoading;
+      emptyReset.textContent = "Tentar novamente";
+      tableWrap.hidden = true;
+      emptyState.hidden = false;
+      exportButton.disabled = true;
+      clearButton.disabled = true;
+      return;
+    }
 
     const isSearching = Boolean(search.value.trim() || filter.value !== "todos");
     document.querySelector("[data-toolbar-summary]").textContent = isSearching
@@ -84,6 +107,9 @@
       : "As confirmações feitas pelo convite aparecerão aqui automaticamente.";
     emptyInvite.hidden = isSearching;
     emptyReset.hidden = !isSearching;
+    emptyReset.textContent = "Limpar busca e filtros";
+    exportButton.disabled = allItems.length === 0;
+    clearButton.disabled = allItems.length === 0;
 
     tableWrap.hidden = items.length === 0;
     emptyState.hidden = items.length !== 0;
@@ -126,6 +152,22 @@
           </tr>`;
       })
       .join("");
+  }
+
+  async function refresh() {
+    isLoading = true;
+    loadError = false;
+    render();
+    try {
+      allItems = await window.GabrieleRSVP.load();
+    } catch (error) {
+      console.error("Não foi possível carregar as respostas.", error);
+      allItems = [];
+      loadError = true;
+    } finally {
+      isLoading = false;
+      render();
+    }
   }
 
   function openModal(options) {
@@ -191,6 +233,10 @@
   filter.addEventListener("change", render);
   exportButton.addEventListener("click", exportCSV);
   emptyReset.addEventListener("click", () => {
+    if (loadError) {
+      refresh();
+      return;
+    }
     search.value = "";
     filter.value = "todos";
     render();
@@ -200,17 +246,18 @@
   list.addEventListener("click", (event) => {
     const button = event.target.closest("[data-delete]");
     if (!button) return;
-    const item = window.GabrieleRSVP.load().find((entry) => entry.id === button.dataset.delete);
+    const item = allItems.find((entry) => entry.id === button.dataset.delete);
     if (!item) return;
     const row = button.closest("tr");
     const adjacentButton = (row.nextElementSibling || row.previousElementSibling)?.querySelector("[data-delete]");
     const adjacentId = adjacentButton?.dataset.delete;
     openModal({
       title: `Remover ${item.name}?`,
-      copy: "A confirmação e os acompanhantes ligados a ela serão removidos deste navegador.",
+      copy: "A confirmação e os acompanhantes ligados a ela serão removidos da lista compartilhada.",
       confirmLabel: "Remover resposta",
-      action: () => {
-        window.GabrieleRSVP.remove(item.id);
+      action: async () => {
+        await window.GabrieleRSVP.remove(item.id);
+        allItems = allItems.filter((entry) => entry.id !== item.id);
         render();
         modalTrigger = adjacentId
           ? [...list.querySelectorAll("[data-delete]")].find((entry) => entry.dataset.delete === adjacentId) || search
@@ -220,17 +267,18 @@
     });
   });
 
-  document.querySelector("[data-clear]").addEventListener("click", () => {
-    if (!window.GabrieleRSVP.load().length) {
+  clearButton.addEventListener("click", () => {
+    if (!allItems.length) {
       showToast("A lista já está vazia.");
       return;
     }
     openModal({
       title: "Tirar todas as respostas?",
-      copy: "Todos os nomes desta demonstração serão removidos deste navegador. Esta ação não pode ser desfeita.",
+      copy: "Todos os nomes serão removidos da lista compartilhada. Esta ação não pode ser desfeita.",
       confirmLabel: "Tirar todas",
-      action: () => {
-        window.GabrieleRSVP.clear();
+      action: async () => {
+        await window.GabrieleRSVP.clear();
+        allItems = [];
         render();
         showToast("Todas as respostas foram removidas.");
       },
@@ -238,13 +286,18 @@
   });
 
   modal.querySelector("[data-modal-cancel]").addEventListener("click", closeModal);
-  modal.querySelector("[data-modal-confirm]").addEventListener("click", () => {
+  modal.querySelector("[data-modal-confirm]").addEventListener("click", async () => {
+    const confirmButton = modal.querySelector("[data-modal-confirm]");
+    confirmButton.disabled = true;
+    confirmButton.setAttribute("aria-busy", "true");
     try {
-      pendingAction?.();
+      await pendingAction?.();
     } catch (error) {
       console.error("Não foi possível concluir a ação.", error);
-      showToast("Não foi possível alterar os dados neste navegador.");
+      showToast("Não foi possível alterar a lista compartilhada.");
     } finally {
+      confirmButton.disabled = false;
+      confirmButton.removeAttribute("aria-busy");
       closeModal();
     }
   });
@@ -267,8 +320,12 @@
       }
     }
   });
-  window.addEventListener("storage", render);
-  window.addEventListener("gabriele:rsvps-changed", render);
+  window.addEventListener("focus", () => {
+    if (!isLoading && modal.hidden) refresh();
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && !isLoading && modal.hidden) refresh();
+  });
 
-  render();
+  refresh();
 })();

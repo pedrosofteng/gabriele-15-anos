@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "gabriele-xv-rsvps-v1";
+  const API_URL = "/api/rsvps";
 
   function cleanText(value) {
     return String(value || "").replace(/\s+/g, " ").trim();
@@ -14,19 +14,30 @@
       .toLocaleLowerCase("pt-BR");
   }
 
-  function load() {
-    try {
-      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      return Array.isArray(stored) ? stored : [];
-    } catch (error) {
-      console.warn("Não foi possível ler as confirmações salvas.", error);
-      return [];
+  async function request(url, options = {}) {
+    const response = await fetch(url, {
+      credentials: "same-origin",
+      cache: "no-store",
+      ...options,
+      headers: {
+        Accept: "application/json",
+        ...options.headers,
+      },
+    });
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      const error = new Error(payload?.error?.message || "Não foi possível concluir a solicitação.");
+      error.code = payload?.error?.code || "REQUEST_FAILED";
+      throw error;
     }
+
+    return payload;
   }
 
-  function persist(items) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    window.dispatchEvent(new CustomEvent("gabriele:rsvps-changed"));
+  async function load() {
+    const payload = await request(API_URL);
+    return Array.isArray(payload?.items) ? payload.items : [];
   }
 
   function parseCompanions(value) {
@@ -43,43 +54,37 @@
       });
   }
 
-  function upsert(payload) {
-    const items = load();
-    const now = new Date().toISOString();
-    const name = cleanText(payload.name);
-    const phone = cleanText(payload.phone);
-    const existingIndex = items.findIndex((item) => {
-      const samePhone = phone && cleanText(item.phone) === phone;
-      return samePhone || normalize(item.name) === normalize(name);
+  async function upsert(payload) {
+    const result = await request(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: cleanText(payload.name),
+        attendance: payload.attendance,
+        phone: cleanText(payload.phone),
+        companions: parseCompanions(payload.companions),
+        dietary: cleanText(payload.dietary),
+        message: cleanText(payload.message),
+      }),
     });
-
-    const existing = existingIndex >= 0 ? items[existingIndex] : null;
-    const response = {
-      id: existing?.id || (globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : `${Date.now()}-${Math.random()}`),
-      name,
-      attendance: payload.attendance === "nao" ? "nao" : "sim",
-      phone,
-      companions: payload.attendance === "nao" ? [] : parseCompanions(payload.companions),
-      dietary: payload.attendance === "nao" ? "" : cleanText(payload.dietary),
-      message: cleanText(payload.message),
-      createdAt: existing?.createdAt || now,
-      updatedAt: now,
-    };
-
-    if (existingIndex >= 0) items.splice(existingIndex, 1, response);
-    else items.unshift(response);
-
-    persist(items);
-    return { response, updated: existingIndex >= 0 };
+    window.dispatchEvent(new CustomEvent("gabriele:rsvps-changed"));
+    return result;
   }
 
-  function remove(id) {
-    const items = load();
-    persist(items.filter((item) => item.id !== id));
+  async function remove(id) {
+    const result = await request(`${API_URL}?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    window.dispatchEvent(new CustomEvent("gabriele:rsvps-changed"));
+    return result;
   }
 
-  function clear() {
-    persist([]);
+  async function clear() {
+    const result = await request(API_URL, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ confirmation: "REMOVER_TODAS" }),
+    });
+    window.dispatchEvent(new CustomEvent("gabriele:rsvps-changed"));
+    return result;
   }
 
   function getPersonCount(item) {
@@ -88,7 +93,6 @@
   }
 
   window.GabrieleRSVP = {
-    key: STORAGE_KEY,
     load,
     upsert,
     remove,

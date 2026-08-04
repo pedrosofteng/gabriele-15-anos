@@ -6,20 +6,23 @@ const vm = require("node:vm");
 
 const source = fs.readFileSync(path.join(__dirname, "..", "data.js"), "utf8");
 
-function createDataLayer() {
-  const storage = new Map();
-  const window = { dispatchEvent() {} };
+function jsonResponse(payload, status = 200) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+function createDataLayer(fetchImpl) {
+  const events = [];
+  const window = {
+    dispatchEvent(event) {
+      events.push(event.type);
+    },
+  };
   const sandbox = {
     window,
-    localStorage: {
-      getItem(key) {
-        return storage.has(key) ? storage.get(key) : null;
-      },
-      setItem(key, value) {
-        storage.set(key, String(value));
-      },
-    },
-    crypto: { randomUUID: () => "fixed-test-id" },
+    fetch: fetchImpl,
     CustomEvent: class CustomEvent {
       constructor(type) {
         this.type = type;
@@ -29,48 +32,81 @@ function createDataLayer() {
   };
 
   vm.runInNewContext(source, sandbox);
-  return window.GabrieleRSVP;
+  return { data: window.GabrieleRSVP, events };
 }
 
 test("separa acompanhantes e remove nomes repetidos", () => {
-  const data = createDataLayer();
+  const { data } = createDataLayer(async () => jsonResponse({}));
   const companions = data.parseCompanions("Ana Silva\nJoão Souza, ana silva; Maria Luz");
 
   assert.deepEqual(Array.from(companions), ["Ana Silva", "João Souza", "Maria Luz"]);
 });
 
-test("salva uma confirmação e calcula o total de pessoas", () => {
-  const data = createDataLayer();
-  const result = data.upsert({
+test("envia confirmação limpa para a API compartilhada", async () => {
+  let captured;
+  const response = {
+    id: "fixed-test-id",
     name: "Pedro Henrique",
     attendance: "sim",
     phone: "(31) 99999-9999",
-    companions: "Ana Silva\nJoão Souza",
-    dietary: "Vegetariano",
-    message: "Estarei lá!",
+    companions: ["Ana Silva", "João Souza"],
+  };
+  const { data, events } = createDataLayer(async (url, options) => {
+    captured = { url, options };
+    return jsonResponse({ ok: true, response, updated: false }, 201);
   });
 
+  const result = await data.upsert({
+    name: "  Pedro   Henrique ",
+    attendance: "sim",
+    phone: "(31) 99999-9999",
+    companions: "Ana Silva\nJoão Souza, ana silva",
+    dietary: " Vegetariano ",
+    message: " Estarei lá! ",
+  });
+  const body = JSON.parse(captured.options.body);
+
+  assert.equal(captured.url, "/api/rsvps");
+  assert.equal(captured.options.method, "POST");
+  assert.equal(body.name, "Pedro Henrique");
+  assert.deepEqual(body.companions, ["Ana Silva", "João Souza"]);
   assert.equal(result.updated, false);
-  assert.equal(data.load().length, 1);
   assert.equal(data.getPersonCount(result.response), 3);
+  assert.deepEqual(events, ["gabriele:rsvps-changed"]);
 });
 
-test("atualiza a resposta do mesmo nome sem criar duplicidade", () => {
-  const data = createDataLayer();
-  data.upsert({ name: "Lívia Costa", attendance: "sim", companions: "Bia Costa" });
-  const result = data.upsert({ name: "Livia Costa", attendance: "nao", companions: "Bia Costa" });
+test("carrega do banco apenas a lista retornada pela API", async () => {
+  const items = [{ id: "1", name: "Lívia Costa", attendance: "nao", companions: [] }];
+  const { data } = createDataLayer(async (url, options) => {
+    assert.equal(url, "/api/rsvps");
+    assert.equal(options.cache, "no-store");
+    return jsonResponse({ ok: true, items });
+  });
 
-  assert.equal(result.updated, true);
-  assert.equal(data.load().length, 1);
-  assert.equal(result.response.attendance, "nao");
-  assert.equal(result.response.companions.length, 0);
-  assert.equal(data.getPersonCount(result.response), 0);
+  assert.deepEqual(await data.load(), items);
 });
 
-test("remove uma resposta pelo identificador", () => {
-  const data = createDataLayer();
-  const { response } = data.upsert({ name: "Marina Lopes", attendance: "sim" });
-  data.remove(response.id);
+test("remove uma resposta usando o identificador codificado", async () => {
+  let captured;
+  const { data } = createDataLayer(async (url, options) => {
+    captured = { url, options };
+    return jsonResponse({ ok: true, removed: 1 });
+  });
 
-  assert.equal(data.load().length, 0);
+  await data.remove("id com espaço");
+
+  assert.equal(captured.url, "/api/rsvps?id=id%20com%20espa%C3%A7o");
+  assert.equal(captured.options.method, "DELETE");
+});
+
+test("propaga a mensagem estruturada de erro da API", async () => {
+  const { data } = createDataLayer(async () =>
+    jsonResponse({ ok: false, error: { code: "INVALID_NAME", message: "Nome inválido." } }, 400),
+  );
+
+  await assert.rejects(() => data.load(), (error) => {
+    assert.equal(error.code, "INVALID_NAME");
+    assert.equal(error.message, "Nome inválido.");
+    return true;
+  });
 });

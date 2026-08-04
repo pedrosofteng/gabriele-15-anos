@@ -178,7 +178,7 @@
     return attendanceValid && valid;
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     if (!validateForm()) return;
 
@@ -191,7 +191,7 @@
     let result;
 
     try {
-      result = window.GabrieleRSVP.upsert({
+      result = await window.GabrieleRSVP.upsert({
         name: data.get("name"),
         attendance: data.get("attendance"),
         phone: data.get("phone"),
@@ -203,7 +203,7 @@
     } catch (error) {
       console.error("Não foi possível salvar a resposta.", error);
       form.querySelector("[data-form-status]").textContent =
-        "Não foi possível salvar neste navegador. Verifique as permissões e tente novamente.";
+        "Não foi possível registrar sua resposta agora. Verifique sua conexão e tente novamente.";
       submit.disabled = false;
       submit.classList.remove("is-loading");
       submit.removeAttribute("aria-busy");

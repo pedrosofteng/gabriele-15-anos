@@ -1,21 +1,24 @@
 # Gabriele XV
 
-Convite digital estático para a festa de 15 anos da Gabriele.
+Convite digital para a festa de 15 anos da Gabriele, publicado no Cloudflare Pages com confirmações compartilhadas em um banco D1 próprio.
 
 ## Visualizar
 
-Sirva esta pasta com um servidor local. No PowerShell:
+Instale as dependências, prepare o D1 local e execute o Pages:
 
 ```powershell
-python -m http.server 8080
+npm install
+npx wrangler d1 migrations apply gabriele-15-anos-rsvps --local
+npm run dev
 ```
 
-Depois abra `http://localhost:8080/`.
+Depois abra `http://localhost:8788/`.
 
-Para verificar a camada de dados:
+Para verificar o projeto:
 
 ```powershell
-node --test tests/data.test.js tests/mobile-contract.test.js
+npm test
+npm run check:functions
 ```
 
 ## Páginas
@@ -26,8 +29,14 @@ node --test tests/data.test.js tests/mobile-contract.test.js
 - `assets/convite-gabriele-480w.jpg` e `assets/convite-gabriele-720w.jpg`: versões responsivas para celulares e tablets.
 - `assets/fonts/`: Bodoni Moda e Manrope servidas localmente para evitar dependência externa e reduzir mudanças de layout.
 
-## Persistência desta base
+## Persistência
 
-Esta versão salva as respostas em `localStorage`, portanto os dados existem apenas no navegador em que foram cadastrados. Isso é adequado para demonstração e aprovação visual.
+As respostas são salvas no banco D1 `gabriele-15-anos-rsvps` pelo endpoint `/api/rsvps`. O formulário e o painel usam o mesmo banco, portanto a lista é compartilhada entre celulares e computadores.
 
-Antes da publicação real, conecte o formulário a um banco (por exemplo, Supabase/Firebase ou uma API própria), acrescente proteção administrativa à página de convidados, validação no servidor, antispam e política de privacidade. Nunca coloque uma chave administrativa no JavaScript do navegador.
+O painel `/convidados` e as operações de remoção estão públicos por decisão do projeto. A API valida e limita os campos no servidor, mas não exige autenticação.
+
+Para aplicar novas migrações na base de produção:
+
+```powershell
+npx wrangler d1 migrations apply gabriele-15-anos-rsvps --remote
+```

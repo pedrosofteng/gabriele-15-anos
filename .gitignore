@@ -3,6 +3,7 @@
 .env.*
 .dev.vars
 .wrangler/
+worker-configuration.d.ts
 
 # Dependencias e arquivos do sistema
 node_modules/
