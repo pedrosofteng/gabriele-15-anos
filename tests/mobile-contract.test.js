@@ -26,6 +26,13 @@ test("exige escolha explícita de presença", () => {
   assert.match(index, /data-error-for="attendance"/);
 });
 
+test("usa o endereço exato no mapa e não solicita acompanhantes", () => {
+  assert.match(index, /query=Diamond%20Espa%C3%A7o%20de%20Eventos/);
+  assert.match(index, /Artur%20Trindade%2C%20766%20-%20Sra\.%20de%20F%C3%A1tima/);
+  assert.doesNotMatch(index, /name="companions"/);
+  assert.doesNotMatch(index, /Acompanhantes <small>\(opcional\)<\/small>/);
+});
+
 test("mantém controles legíveis e tocáveis no mobile", () => {
   assert.match(styles, /@media \(max-width: 600px\)/);
   assert.match(styles, /\.form-field input,[\s\S]*?font-size: 16px/);
